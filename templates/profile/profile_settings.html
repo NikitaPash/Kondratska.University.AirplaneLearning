@@ -1,0 +1,158 @@
+{% extends "profile/profile_page.html" %}
+{% load static %}
+{% block title %}Profile Settings{% endblock %}
+{% block sidebar %}
+    <article class="sidebar">
+        <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+                src="{% static "/leeri_logo.png" %}"
+                style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px"
+                alt="leari on a plane"></a>
+        <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+        <hr style="color: white; width: 100%">
+        <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+        <hr style="color: white; width: 100%">
+        <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px"
+           href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="/resources">Resource Library</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px;"><u>Settings</u></a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+        <footer class="sniglet" style="bottom: 45px; left: 75px">
+            <p>© gearbeagel</p>
+        </footer>
+    </article>
+{% endblock %}
+{% block content %}
+    <div style="margin: -425px 0 0 -200px; width: 500px;">
+        <h2 class="sniglet" style="color: #d39c3f; margin-bottom: -5px; margin-top: 10px">Settings</h2>
+
+        <!-- Learner Type Form -->
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+        <form id="learner-type-form" method="post" class="sniglet"
+              style="color: #d39c3f; text-align: center; font-size: 40px">
+            {% csrf_token %}
+            <label for="learner_type">Learner Type:</label>
+            <br>
+            <select name="learner_type" id="learner_type"
+                    style="width: 300px; height: 35px; font-size: 16px; font-family: Sniglet, sans-serif">
+                <option value="" hidden>--------</option>
+                <option value="1" {% if user.profile.learner_type.id == 1 %} selected {% endif %}>Beginner</option>
+                <option value="2" {% if user.profile.learner_type.id == 2 %} selected {% endif %}>Skilled</option>
+                <option value="3" {% if user.profile.learner_type.id == 3 %} selected {% endif %}>Advanced</option>
+            </select>
+            <br>
+            <button type="submit" name="learner_type_submit"
+                    style="height: 50px; width: 300px; font-size: 20px; margin-top: 10px">Save Learner Type
+            </button>
+        </form>
+
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+        <!-- Profile Picture Form -->
+        <form id="profile-picture-form" method="post" enctype="multipart/form-data" class="sniglet"
+              style="color: #d39c3f; text-align: center; font-size: 40px">
+            {% csrf_token %}
+            <label for="profile_pic_url">Profile Picture:</label>
+            <br>
+            <input type="file" accept="image/*" name="profile_pic_url" id="profile_pic_url">
+            <br>
+            <button type="submit" name="profile_pic_submit"
+                    style="height: 50px; width: 300px; font-size: 20px; margin-top: 10px">Save Profile Picture
+            </button>
+            <button type="submit" name="default_profile_pic"
+                    style="font-size: 20px; height: 50px; width: fit-content; background-color: #578661">Default
+            </button>
+        </form>
+
+        <p id="message" style="margin-top: 10px; font-size: 16px; display: none;"></p>
+
+        <a href="{% url 'profile_page' username=user.username %}" id="back-btn"
+           style="height: 75px; width: 350px; font-size: 30px; margin-top: 15px; display: none;">Go back to profile</a>
+
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+
+        <!-- Receive Notifications -->
+        <form id="notification-settings-form" method="post" class="sniglet"
+              style="color: #d39c3f; text-align: center; font-size: 24px; max-width: 600px; margin: 0 auto;">
+            <label style="color: #d39c3f; text-align: center; font-size: 40px">Receive Notifications:</label>
+            {% csrf_token %}
+
+            <!-- Other Notification Types -->
+            <br>
+            <span style="margin-bottom: 10px;">
+    <label style='color: black; font-size: 15px'>
+        <input type="checkbox" name="new_modules_notifications" value="Send"
+               {% if user.profile.new_modules_notifications == 'Send' %}checked{% endif %}>
+        New Modules Notifications
+    </label>
+</span>
+            <br>
+            <span style="margin-bottom: 10px;">
+    <label style='color: black; font-size: 15px'>
+        <input type="checkbox" name="quiz_results_notifications" value="Send"
+               {% if user.profile.quiz_results_notifications == 'Send' %}checked{% endif %}>
+        Quiz Results Notifications
+    </label>
+</span>
+            <br>
+            <span style="margin-bottom: 10px;">
+    <label style='color: black; font-size: 15px'>
+        <input type="checkbox" name="discussion_notifications" value="Send"
+               {% if user.profile.discussion_notifications == 'Send' %}checked{% endif %}>
+        Discussion Notifications
+    </label>
+</span>
+            <br>
+            <span style="margin-bottom: 10px;">
+    <label style='color: black; font-size: 15px'>
+        <input type="checkbox" name="new_resources_notifications" value="Send"
+               {% if user.profile.new_resources_notifications == 'Send' %}checked{% endif %}>
+        New Resources Notifications
+    </label>
+</span>
+            <br>
+            <span style="margin-bottom: 10px;">
+    <label style='color: black; font-size: 15px'>
+    <input type="checkbox" name="receive_notifications" id="receive_notifications" value="Send"
+           {% if user.profile.receive_notifications == 'Send' %}checked{% endif %}>
+    All Notifications</label>
+</span>
+            <br>
+
+            <button type="submit" name="receive_notifications_submit"
+                    style="height: 50px; width: 100%; font-size: 20px; margin-top: 10px">Save Notification Settings
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+<script>
+    var selectedValue = "<?php echo $learner_type; ?>";
+    var selectElement = document.getElementById("learner_type");
+
+    for (var i = 0; i < selectElement.options.length; i++) {
+        if (selectElement.options[i].value === selectedValue) {
+            selectElement.options[i].setAttribute("selected", "selected");
+            break;
+        }
+    }
+</script>

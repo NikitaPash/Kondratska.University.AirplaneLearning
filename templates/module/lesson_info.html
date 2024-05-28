@@ -1,0 +1,113 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <title>{{ lesson.title }}</title>
+</head>
+<body>
+<article class="sidebar">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+            src="{% static "/leeri_logo.png" %}"
+            style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px" alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"
+       href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"><u>Discussion Forums</u></a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/resources">Resource Library</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+</article>
+<h1 class="sniglet" style="text-align: center">{{ lesson.title }}</h1>
+<p style="margin-left: 350px">{{ lesson.description }}</p>
+<p style="margin-left: 350px;
+        {% if lesson.difficulty_level == 'Easy' %}
+            background-color: #578661;
+        {% elif lesson.difficulty_level == 'Medium' %}
+            background-color: #d39c3f;
+        {% elif lesson.difficulty_level == 'Hard' %}
+            background-color: #CC6666;
+        {% endif %}; padding: 10px 40px 10px 40px; border-radius: 20px; color: white; width: 40px;">{{ lesson.difficulty_level }}</p>
+<div id="lesson-content" style="border: none">
+    {% for section in sections %}
+        <div class="lesson-section"
+             style="display: {% if forloop.first %}inline-flex{% else %}none{% endif %}; width: 500px;
+                     margin: -200px 0 0 -250px;">
+            <h3 class="sniglet">{{ section.title }}</h3>
+            <p>{{ section.contents | safe }}</p>
+        </div>
+    {% endfor %}
+    <span style="display: flex; flex-direction: row">
+        <button class="prev-section-btn"
+                style="margin-top: 475px; margin-left: -200px; width: 40px; height: fit-content"><</button>
+        <button class="next-section-btn"
+                style="margin-top: 200px; right: 200px; width: 40px; height: fit-content">></button>
+    </span>
+    <input type="hidden" id="modules-list-url" value="{% url 'modules_list' language.id %}">
+</div>
+
+<script>
+    const sectionDivs = document.querySelectorAll('.lesson-section');
+    const nextBtn = document.querySelector('.next-section-btn');
+    const prevBtn = document.querySelector('.prev-section-btn'); // Add this line
+    const modulesListUrl = document.getElementById('modules-list-url').value;
+    let currentIndex = 0;
+
+    nextBtn.addEventListener('click', () => {
+        navigateSection(1);
+    });
+
+    prevBtn.addEventListener('click', () => {
+        navigateSection(-1);
+    });
+
+    function navigateSection(step) {
+        sectionDivs[currentIndex].style.display = 'none';
+        currentIndex += step;
+        if (currentIndex >= 0 && currentIndex < sectionDivs.length) {
+            sectionDivs[currentIndex].style.display = 'block';
+        } else if (currentIndex === sectionDivs.length) {
+            window.location.href = modulesListUrl;
+        }
+    }
+
+    sectionDivs.forEach((div, index) => {
+        if (index !== 0) {
+            div.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

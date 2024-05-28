@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <title>Resources</title>
+    <style>
+        .grid-container {
+            margin-left: 325px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .grid-item {
+            border-radius: 25px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<article class="sidebar">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+            src="{% static "/leeri_logo.png" %}"
+            style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px" alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"
+       href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"><u>Resource Library</u></a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+</article>
+<h1 class="sniglet" style="margin-left: 800px">Resource feed</h1>
+<br>
+<span class="grid-container">
+    <ul style="list-style-type: none">
+    <li class="grid-item"
+        style="border: #d39c3f 3px solid; border-radius: 25px; padding: 20px; width: fit-content; align-items: center;"><a
+            href="{% url "dictionary" %}"><button>Dictionary</button></a>
+    <p style="background-color: #CC6666; padding: 10px 40px 10px 40px; border-radius: 20px; color: white; width: 40px; text-align: center;">Other</p></li>
+        {% if resources %}
+            {% for resource in resources %}
+                <li class="grid-item"
+                    style="border: #d39c3f 3px solid; border-radius: 25px; padding: 20px; width: 400px; height: fit-content; align-items: center">
+        <a style="justify-content: center" href="{{ resource.source }}"><button
+                style="width: 100%">{{ resource.name }}</button></a><br>
+        <p style="text-align: center; color: lightgray;">{{ resource.humanized_added_at }}</p>
+        <p style="text-align: center; width: 100%"> {{ resource.description }}</p>
+        <p style="{% if resource.type == 'Video' %}
+            background-color: #578661;
+        {% elif resource.type == 'Article' %}
+            background-color: #637d91;
+        {% elif resource.type == 'Other' %}
+            background-color: #CC6666;
+        {% endif %}; padding: 10px 40px 10px 40px; border-radius: 20px; color: white; width: 40px; text-align-all: center;">{{ resource.type }}</p>
+    </li>
+            {% endfor %}
+        {% else %}
+            <li style="margin-left: 600px">No resources available. :(</li>
+        {% endif %}
+</ul>
+</span>
+</body>
+<script>
+    var grid = document.querySelector('.grid-container');
+    var masonry = new Masonry(grid, {
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-item',
+        gutter: 20
+    });
+
+    // Set random width and height for grid items without going less than the content size
+    var gridItems = document.querySelectorAll('.grid-item');
+
+    gridItems.forEach(function (item) {
+        var contentWidth = item.querySelector('.type-label').offsetWidth;
+        var contentHeight = item.querySelector('.type-label').offsetHeight;
+
+        var minContentWidth = contentWidth + 40; // Adjust padding value if needed
+        var minContentHeight = contentHeight + 40; // Adjust padding value if needed
+
+        // Generate random width and height between content size and maximum size
+        var maxWidth = 400; // Adjust maximum width if needed
+        var maxHeight = 400; // Adjust maximum height if needed
+
+        var randomWidth = Math.floor(Math.random() * (maxWidth - minContentWidth + 1)) + minContentWidth;
+        var randomHeight = Math.floor(Math.random() * (maxHeight - minContentHeight + 1)) + minContentHeight;
+
+        // Set width and height for grid item
+        item.style.width = randomWidth + 'px';
+        item.style.height = randomHeight + 'px';
+    });
+
+    // Update Masonry layout after setting new sizes
+    masonry.layout();
+</script>
+</html>

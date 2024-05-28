@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz {{ quiz.title }} finished!</title>
+</head>
+<body>
+<h1>Quiz {{ quiz.title }} finished!</h1>
+<p>Hello, {{ profile.username }}!
+    <br>
+    I, Leari, the best birdie, can see, that you have finished the quiz titled {{ quiz.title }}!
+    <br>
+    Let me show you the results:
+    <br>
+    Your score: <strong>{{ percentage_correct|floatformat:2 }}</strong>
+    <br>
+    You can view the results on the website to see, which mistakes you have made.</p>
+<p>Lots of love,
+    <br>
+    Leari and Plushie.
+</p>
+<p>
+    <br>
+    PS: You can turn off these notifications in the profile settings. :)
+</p>
+</body>
+</html>

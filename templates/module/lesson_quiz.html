@@ -1,0 +1,102 @@
+{% load quiz_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <title>{{ quiz.title }}</title>
+</head>
+<body>
+<article class="sidebar">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+            src="{% static "/leeri_logo.png" %}"
+            style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px" alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"
+       href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/resources">Resource Library</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+</article>
+
+<h1 class="sniglet" style="margin-left: 700px">{{ quiz.title }}</h1>
+<p style="margin-left: 350px">{{ quiz.description }}</p>
+<p style="margin-left: 350px;
+        {% if quiz.difficulty_level == 'Easy' %}
+            background-color: #578661; /* Easy */
+        {% elif quiz.difficulty_level == 'Medium' or 'medium' %}
+            background-color: #d39c3f; /* Medium */
+        {% elif quiz.difficulty_level == 'Hard' %}
+            background-color: #CC6666; /* Hard */
+        {% endif %}; padding: 10px 40px 10px 40px; border-radius: 20px; color: white; width: 40px">{{ quiz.difficulty_level }}</p>
+<br>
+{% if quiz_status.status == "Not Started" %}
+    <form method="post" action="{% url 'quiz_result' language.id quiz.id %}">
+        {% csrf_token %}
+        {% for question in questions %}
+            <h3 class="sniglet"
+                style="margin-left: 400px; padding: 10px; border: #d39c3f 3px solid; border-radius: 25px; width: fit-content">{{ question.text }}</h3>
+            {% if question.question_type == 'Single Choice' %}
+                {% for answer in answers_dict|get_value:question %}
+                    <label class="sniglet" style="margin-left: 450px">
+                        <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
+                        {{ answer.text }}
+                    </label><br>
+                {% endfor %}
+            {% elif question.question_type == 'Multiple Choice' %}
+                {% for answer in question.answer_set.all %}
+                    <label class="sniglet" style="margin-left: 450px">
+                        <input type="checkbox" name="question_{{ question.id }}" value="{{ answer.id }}">
+                        {{ answer.text }}
+                    </label><br>
+                {% endfor %}
+            {% elif question.question_type == 'Open Text' %}
+                <label>
+                    <textarea name="question_{{ question.id }}" rows="4" cols="50"
+                              style="margin-left: 450px; font-family: Sniglet, sans-serif"></textarea>
+                </label><br>
+            {% endif %}
+        {% endfor %}
+        <br>
+        <button type="submit" style="margin-left: 815px">Submit</button>
+    </form>
+{% elif quiz_status.status == "Completed" %}
+    <p style="margin-left: 825px">You have already passed the quiz. You can view the results <a style='color: #637d91'
+                                                                                                href="{% url "quiz_result" language_id=language.id quiz_id=quiz.id %}">here.</a>
+    </p>
+{% endif %}
+</form>
+</body>
+</html>

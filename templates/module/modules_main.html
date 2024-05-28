@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <title>All Languages</title>
+    
+</head>
+<body>
+<article class="sidebar">
+
+    <a href="/profile"><img src="{% static "/leeri_logo.png" %}"
+                            style="height: 30%; width: 115%; margin-left: -10px; margin-bottom: -50px"
+                            alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 30px">Airplane Learning</p>
+    <a class="sniglet" style="font-size: 15px" href="/langs">Go to all languages</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/forums">Go to discussion forums</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Go to settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+
+</article>
+
+<h1 class="sniglet-extrabold" style="text-align: center">Choose a language to learn</h1>
+<div class="column">
+    {% for language in languages %}
+        <button class="modules sniglet"><a href="{% url 'modules_list' language.id %}">{{ language.name }}</a></button>
+        <p>{{ language.joke }}</p>
+        <br>
+    {% endfor %}
+</div>
+</body>
+</html>

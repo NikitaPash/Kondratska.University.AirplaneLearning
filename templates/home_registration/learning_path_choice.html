@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <title>Make a choice</title>
+</head>
+<body>
+<h2 class="sniglet" style="justify-content: center; display: flex; flex-wrap: wrap;">Before we start, it would be great
+    if you could answer a couple of questions.</h2>
+<div class="container" style="margin: 0 0 0 0; border: none; position: absolute">
+    <form method="post" action="{% url 'setup' %}">
+        {% csrf_token %}
+        <div class="column" style="margin: -200px 0 0 -600px">
+            <h3 class="sniglet">Which language would you like to focus on?</h3>
+            {% for language in form.chosen_language.field.queryset %}
+                <label class="sniglet">
+                    <input type="radio" name="chosen_language" value="{{ language.id }}">{{ language.name }}
+                </label>
+                {% if language.joke %}
+                    <p>{{ language.joke }}</p>
+                {% endif %}
+                <br>
+            {% endfor %}
+        </div>
+        <div class="column" style="margin: -200px 0 0 100px">
+            <h3 class="sniglet">Choose a learning path for that language:</h3>
+            {% for lp in form.learner_type.field.queryset %}
+                <label class="sniglet">
+                    <input type="radio" name="learner_type" value="{{ lp.id }}">{{ lp.title }}
+                </label>
+                <p>{{ lp.description }}</p>
+                <br>
+            {% endfor %}
+        </div>
+        <button type="submit" class="submit-button" style="position: relative; top: 275px; left: -250px">Submit</button>
+    </form>
+</div>
+</body>
+</html>

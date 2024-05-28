@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <title>Dictionary</title>
+</head>
+<body>
+<article class="sidebar">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+            src="{% static "/leeri_logo.png" %}"
+            style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px" alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"
+       href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/resources">Resource Library</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+</article>
+<h1 class="sniglet" style="margin-left: 800px;">Dictionary</h1>
+<span style="display: flex; flex-direction: row"> 
+    <form action="{% url 'dictionary' %}" method="post"
+          style="margin-left: 400px; margin-top: 50px; border: #d39c3f 3px solid; border-radius: 25px; width: fit-content; height: fit-content; padding: 10px">
+        {% csrf_token %}
+        <label class="sniglet" style="font-size: 30px; margin-left: 165px;" for="word">Enter a Word:</label>
+        <br>
+        <input type="text" name="word" id="word" class="sniglet"
+               style="width: 500px;  height: 40px; margin-bottom: 10px; margin-top: 10px">
+        <br>
+        <button style="margin-left: 50px" type="submit">Search</button>
+    </form>
+        <span style="display: flex; flex-direction: column; border-left: #d39c3f 3px solid; margin-left: 60px">
+        {% if meanings %}
+            <h2 class="sniglet" style="margin-top: 60px; margin-left: 50px">"{{ word }}" means:</h2>
+            <ul style="list-style-type: none; margin-left: 50px; margin-top: 20px; border: #d39c3f 3px solid; border-radius: 25px; width: 600px; padding: 10px">
+        {% for meaning in meanings %}
+            <li>{{ meaning }}
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;"></li>
+        {% endfor %}
+    </ul>
+        {% else %}
+            <p style="margin-left: 200px; margin-top: 60px">No meaning for "{{ word }}" found. :(</p>
+        {% endif %}
+        </span>
+</span>
+</body>
+</html>

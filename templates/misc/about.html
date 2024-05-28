@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <title>About</title>
+</head>
+<body>
+<article class="sidebar">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+            src="{% static "/leeri_logo.png" %}"
+            style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px" alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"
+       href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"><u>About</u></a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+</article>
+<div style="margin: -350px 0 0 -200px; width: 500px">
+    <img src="{% static "leeri_stare.png" %}"
+         style="height: 30%; width: 30%; margin-bottom: -25px; margin-left: 25px; margin-right: 25px;"
+         alt="{{ user.username }}'s profile picture">
+    <h2 class="sniglet" style="color: #d39c3f; margin-bottom: -15px; text-align: center">Victoria Kondatska</h2>
+    <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+    <p class="sniglet" style="color: #637d91; margin-bottom: -5px">Airplane Learning: Polyglot Pro (Project №13)</p>
+    <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+    <h3 class="sniglet" style="margin-bottom: -5px"><a href="https://t.me/gearbeagel" style="color: #637d91"><i
+            class="fab fa-telegram"></i> Telegram</a></h3>
+    <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+    <h3 class="sniglet" style="color: #637d91; margin-bottom: -5px"><a style="color: #637d91" href="mailto:kondratskayavictoria@gmail.com"><i
+            class="fas fa-envelope"></i> Email</a></h3>
+    <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+    <h3 class="sniglet" style="color: #637d91; margin-bottom: -5px"><a style="color: #637d91" href="https://github.com/gearbeagel/Kondratska.University.AirplaneLearning"><i
+            class="fab fa-github"></i> Github</a></h3>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{% load socialaccount %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <title>{% block title %}Profile {% endblock %}</title>
+</head>
+<body>
+{% block sidebar %}
+    <article class="sidebar">
+        <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+                src="{% static "/leeri_logo.png" %}"
+                style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px"
+                alt="leari on a plane"></a>
+        <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+        <hr style="color: white; width: 100%">
+        <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+        <hr style="color: white; width: 100%">
+        {% if student.username == request.user.username %}
+            <a class="sniglet"><u>Profile</u></a>
+        {% else %}
+            <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+        {% endif %}
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px"
+           href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="/resources">Resource Library</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+        <br>
+        <br>
+        <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+        <br>
+        <br>
+        <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+        <footer class="sniglet" style="bottom: 45px; left: 75px">
+            <p>© gearbeagel</p>
+        </footer>
+    </article>
+{% endblock %}
+{% block content %}
+    <div style="margin: -350px 0 0 -200px; width: 500px">
+        <img src="{{ profile_picture_url }}"
+             style="height: 150px; width: 150px; margin-bottom: -25px; margin-left: 25px; margin-right: 25px; border-radius: 50%; object-fit: cover; overflow: hidden;"
+             alt="{{ student.username }}'s profile picture">
+        <h2 class="sniglet" style="color: #d39c3f; margin-bottom: -15px">{{ student.username }}</h2>
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+        <p class="sniglet" style="color: #d39c3f; margin-bottom: -5px">{{ student.email }}</p>
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+        <h3 class="sniglet" style="color: #637d91; margin-bottom: -5px">{{ student.learner_type.alternate_title }}</h3>
+        <h3 class="sniglet" style="color: #637d91; margin-bottom: -5px">Your progress: <span
+                style="color: #578661;">{{ student.progress|floatformat:2 }}%</span></h3>
+        <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+        <h3 class="sniglet" style="color: #d39c3f; margin-bottom: -5px">Latest
+            lesson: {{ latest_lesson.lesson.title|default:"none passed. :(" }}
+            ({{ latest_lesson_language.name|default:"It won't hurt to try!" }})</h3>
+        <h3 class="sniglet" style="color: #d39c3f; margin-bottom: -5px">Latest
+            quiz: {{ latest_quiz.quiz.title|default:"none passed. :(" }}
+            ({{ latest_quiz_language.name|default:"It won't hurt to try!" }})</h3>
+        {% if student.username == request.user.username %}
+            <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 20px;">
+            <h3 class="sniglet" style="color: #d39c3f;">Share your profile</h3>
+            <span>
+        <a style="color: #d39c3f" id='twitterLink' href="#" class="meta-act-link meta-tweet socials" target="_blank">
+            <button style="width: fit-content; height: fit-content; padding: 10px; border-radius: 10px; border: none;">
+                <i class="fab fa-twitter"></i>
+            </button>
+        </a>
+        <a id="telegramLink" style="margin-left: 10px; color: #0088cc" href="#"
+           class="meta-act-link meta-telegram socials" target="_blank">
+        <button style="width: fit-content; height: fit-content; padding: 10px; border-radius: 10px">
+            <i class="fab fa-telegram"></i>
+        </button>
+    </a>
+    </span>
+        {% endif %}
+    </div>
+{% endblock %}
+</body>
+<script>
+    var twitterLink = document.getElementById("twitterLink");
+    var twitterIntentUrl = "https://twitter.com/intent/tweet";
+    var texttwi = "Here is my account. Check it out! https://airplanelearningpolyglotpto.azurewebsites.net/profile/{{ request.user.username }}";
+    var encodedTexttwi = encodeURIComponent(texttwi);
+    var completeUrltwi = twitterIntentUrl + "?text=" + encodedTexttwi;
+    twitterLink.href = completeUrltwi;
+
+    var telegramLink = document.getElementById("telegramLink");
+    var telegramUrl = "https://telegram.me/share/url";
+    var telegramText = "Here is my account. Check it out!";
+    var telegramEncodedText = encodeURIComponent(telegramText);
+    var telegramUrlWithParams = telegramUrl + "?url= https://airplanelearningpolyglotpto.azurewebsites.net/profile/{{ request.user.username }}" + telegramEncodedText;
+    telegramLink.href = telegramUrlWithParams;
+</script>
+</html>

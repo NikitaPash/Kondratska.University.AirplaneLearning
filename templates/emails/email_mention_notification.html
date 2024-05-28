@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>You received an answer!</title>
+</head>
+<body>
+<h1>You got an answer!</h1>
+<p>Hello, {{ user.username }}!
+    <br>
+    You received an answer to your comment from {{ comment.created_by.username }} on a topic {{ comment.topic.title }}.
+</p>
+Here's what the comment looks like:
+<br>
+<strong>{{ comment.message }}</strong>
+<p>Lots of love,
+    <br>
+    Leari and Plushie.
+</p>
+<p>
+    <br>
+    PS: You can turn off these notifications in the profile settings. :)
+</p>
+</body>
+</html>

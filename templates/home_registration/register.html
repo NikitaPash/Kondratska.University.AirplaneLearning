@@ -1,0 +1,29 @@
+{% load socialaccount %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+    <title>Register</title>
+</head>
+<body>
+<section class="row">
+    <img src="{% static 'leeri_stare.png' %}" class='image' alt="Leeri staring into your soul">
+    <div class="registration">
+        <h2 class="sniglet">Register/Login with Google</h2>
+        <a href="{% provider_login_url 'google' %}?next=/setup">
+            <button class="reg-button">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" style="height: 25%;
+    width: 25%;">Get Started
+            </button>
+        </a>
+    </div>
+</section>
+<footer class="sniglet" style="color: #578661">
+    <p>© gearbeagel</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+{% load social_share %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Result</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}">
+</head>
+<body>
+<article class="sidebar">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}"><img
+            src="{% static "/leeri_logo.png" %}"
+            style="height: 210px; width: 210px; margin-left: -10px; margin-bottom: -50px" alt="leari on a plane"></a>
+    <p class="sniglet" style="color: white; font-size: 25px">Airplane Learning</p>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet">Logged in as: {{ request.user.username }}</a>
+    <hr style="color: white; width: 100%">
+    <a class="sniglet" href="{% url "profile_page" username=request.user.username %}">Profile</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px"
+       href="{% url "modules_list" language_id=user.profile.chosen_language.id %}">Modules</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/forums">Discussion Forums</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/resources">Resource Library</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="/feedback">Feedback Form</a>
+    <br>
+    <br>
+    <a href="{% url 'profile_settings' %}" class="sniglet" style="font-size: 15px; ">Settings</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'schema-swagger-ui' %}">Swagger</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'logout' %}">Log out</a>
+    <br>
+    <br>
+    <a class="sniglet" style="font-size: 15px" href="{% url 'about' %}">About</a>
+    <footer class="sniglet" style="bottom: 45px; left: 75px">
+        <p>© gearbeagel</p>
+    </footer>
+</article>
+
+<h1 class="sniglet" style="margin-left: 800px">Quiz Result</h1>
+<br>
+<ul style="margin-left: 250px; list-style-type: none">
+    {% for question, data in quiz_data.items %}
+        <li class="sniglet" style='padding: 10px; border: #d39c3f 3px solid; border-radius: 25px; width: fit-content'>
+            <strong>Question:</strong> {{ question.text }}<br>
+            <hr style="border: none; border-top: 3px solid #d39c3f; width: auto; margin-top: 10px; margin-bottom: 10px">
+            <strong>Correct Answer:</strong>
+            {% if data.correct_answer %}
+                {% if question.question_type == 'Multiple Choice' %}
+                    <ul>
+                        {% for answer in data.correct_answer %}
+                            <li>{{ answer }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {% for answer in data.correct_answer %}
+                        {{ answer }}
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                No answer provided
+            {% endif %}
+            <br>
+            <strong>Your Answer:</strong>
+            {% if data.user_answer %}
+                {% if question.question_type == 'Multiple Choice' %}
+                    <ul>
+                        {% for answer in data.user_answer %}
+                            <li>{{ answer }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {{ data.user_answer }}
+                {% endif %}
+            {% else %}
+                No answer provided
+            {% endif %}
+            <hr style="border: none; border-top: 3px solid #d39c3f; width: 100%; margin-top: 10px; margin-bottom: 10px">
+            {% if data.is_correct == "Correct" %}
+                <span style="color: green;"><strong>Result:</strong> Correct</span><br>
+            {% else %}
+                <span style="color: red;"><strong>Result:</strong> Incorrect</span><br>
+            {% endif %}
+        </li>
+        <br>
+    {% endfor %}
+</ul>
+<h2 class="sniglet" style="margin-left: 300px; margin-bottom: -10px">Share your results:</h2>
+<br>
+<span style="display: flex; flex-direction: row">
+    <span style="margin-left: 300px;">
+        <a style="color: #d39c3f;" id='twitterLink' href="#" class="meta-act-link meta-tweet socials" target="_blank">
+            <button style="width: fit-content; height: fit-content; padding: 10px; border-radius: 10px; border: none; font-size: 25px">
+                <i class="fab fa-twitter"></i>
+            </button>
+        </a>
+        <a id="telegramLink" style="margin-left: 10px; color: #0088cc; font-size: 15px" href="#"
+           class="meta-act-link meta-telegram socials" target="_blank">
+        <button style="width: fit-content; height: fit-content; padding: 10px; border-radius: 10px; font-size: 25px">
+            <i class="fab fa-telegram"></i>
+        </button>
+    </a>
+    </span>
+</span>
+<br>
+{% if resource_data %}
+    <h3 class="sniglet" style="margin-left: 300px; margin-bottom: -10px">Related Resources:</h3>
+    <ul style="margin-left: 250px; list-style-type: none">
+    {% for resource in resource_data %}
+        <a href="{{ resource.source }}" target="_blank">
+            <button style="background-color: #637d91; height: 70px; width: 250px; font-size: 20px">{{ resource.name }}
+                ({{ resource.type }})
+            </button>
+        </a>
+    {% endfor %}
+{% endif %}
+</ul>
+<br>
+<a href="{% url "modules_list" language_id=user.profile.chosen_language.id %}" style="margin-left: 290px">
+    <button>Go back to all modules</button>
+</a>
+</body>
+<script>
+    var twitterLink = document.getElementById("twitterLink");
+    var twitterIntentUrl = "https://twitter.com/intent/tweet";
+    var texttwi = "I have accomplished a quiz and earned " + {{ percentage_correct }} + "%! Try it out yourself! https://airplanelearningpolyglotpto.azurewebsites.net/langs/modules_list/{{ language.id }}/quiz/{{quiz.id}}/";
+    var encodedTexttwi = encodeURIComponent(texttwi);
+    var completeUrltwi = twitterIntentUrl + "?text=" + encodedTexttwi;
+    twitterLink.href = completeUrltwi;
+
+    var telegramLink = document.getElementById("telegramLink");
+    var telegramUrl = "https://telegram.me/share/url";
+    var telegramText = "I have accomplished a quiz and earned " + {{ percentage_correct }} + "%! Try it out yourself!";
+    var telegramEncodedText = encodeURIComponent(telegramText);
+    var telegramUrlWithParams = telegramUrl + "?url=https://airplanelearningpolyglotpto.azurewebsites.net/langs/modules_list/{{ language.id }}/quiz/{{quiz.id}}/&text=" + telegramEncodedText;
+    telegramLink.href = telegramUrlWithParams;
+</script>
+</html>
